@@ -1,0 +1,273 @@
+[
+    {
+        "id": "4485d043.94b09",
+        "type": "tab",
+        "label": "listen",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "c38674b.8574788",
+        "type": "inject",
+        "z": "4485d043.94b09",
+        "name": "start listening",
+        "topic": "",
+        "payload": "start",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 96,
+        "y": 76,
+        "wires": [
+            [
+                "8dd87517.ac57d8"
+            ]
+        ]
+    },
+    {
+        "id": "b5f07097.c9e5a",
+        "type": "inject",
+        "z": "4485d043.94b09",
+        "name": "stop listening",
+        "topic": "",
+        "payload": "stop",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 96,
+        "y": 138,
+        "wires": [
+            [
+                "8dd87517.ac57d8"
+            ]
+        ]
+    },
+    {
+        "id": "8dd87517.ac57d8",
+        "type": "change",
+        "z": "4485d043.94b09",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "mode",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 100,
+        "wires": [
+            [
+                "83de3099.5f27b8"
+            ]
+        ]
+    },
+    {
+        "id": "83de3099.5f27b8",
+        "type": "tjbot-listen",
+        "z": "4485d043.94b09",
+        "botId": "88c3b7d5.047fb8",
+        "name": "",
+        "x": 478,
+        "y": 97,
+        "wires": [
+            [
+                "cd2cac69.c7576",
+                "72677bae.585144"
+            ]
+        ]
+    },
+    {
+        "id": "72677bae.585144",
+        "type": "switch",
+        "z": "4485d043.94b09",
+        "name": "colors",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "rainbow",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "red",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "green",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "blue",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "read",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "off",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "white",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "yellow",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "outputs": 8,
+        "x": 109,
+        "y": 320,
+        "wires": [
+            [
+                "ed496640.3c2338",
+                "52688818.cc5a"
+            ],
+            [
+                "ed496640.3c2338"
+            ],
+            [
+                "207049f2.feb7b6"
+            ],
+            [
+                "f0232f43.5ec7f8"
+            ],
+            [
+                "ed496640.3c2338"
+            ],
+            [
+                "36c66592.102bea"
+            ],
+            [
+                "a8a9b8b5.3890d8"
+            ],
+            [
+                "e2d05cf.acee62"
+            ]
+        ]
+    },
+    {
+        "id": "cd2cac69.c7576",
+        "type": "debug",
+        "z": "4485d043.94b09",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 316,
+        "y": 166,
+        "wires": []
+    },
+    {
+        "id": "f0232f43.5ec7f8",
+        "type": "python-function",
+        "z": "4485d043.94b09",
+        "name": "blue",
+        "func": "#!/usr/bin/env python\n#\n\n# Based on: Adafruit https://raw.githubusercontent.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/master/Adafruit_LEDpixels/Adafruit_LEDpixels.py and AndyPi\n#\n# Hardware: WS2801 pixels, CLOCK=RPi23; Data=RPi19, GND=RpiGND, +5v=Rpi+5v\n\nimport RPi.GPIO as GPIO\nimport time\nimport sys\n\n\nclass Lights:\n\n # import RPi.GPIO as GPIO, time, os\n NUMBER_OF_PIXELS = 200 # set number of pixels in your strip\n DEBUG = 1\n GPIO.setmode(GPIO.BCM)\n\n SPICLK = 23 # The SPI clock pin on the raspberry pi, pin 23\n SPIDO = 19 # The SPI data line (MOSI) on the raspberry pi, pin 19\n ledpixels = [0] * NUMBER_OF_PIXELS\n\n def slowspiwrite(self, clockpin, datapin, byteout):\n GPIO.setup(clockpin, GPIO.OUT)\n GPIO.setup(datapin, GPIO.OUT)\n for i in range(8):\n if (byteout & 0x80):\n GPIO.output(datapin, True)\n else:\n GPIO.output(clockpin, False)\n byteout <<= 1\n GPIO.output(clockpin, True)\n GPIO.output(clockpin, False)\n\n def writestrip(self, pixels):\n try:\n spidev = open(\"/dev/spidev0.0\", \"bw\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 8) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 0) & 0xFF).encode('latin-1'))\n except ValueError:\n spidev = open(\"/dev/spidev0.0\", \"w\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF))\n spidev.write(chr((pixels[i] >> 8) & 0xFF))\n spidev.write(chr((pixels[i] >> 0) & 0xFF))\n spidev.close()\n time.sleep(0.002)\n\n def Color(self, r, g, b):\n return ((int(r) & 0xFF) << 16) | ((int(g) & 0xFF) << 8) | (int(b) & 0xFF)\n\n def setpixelcolor(self, pixels, n, r, g, b):\n if (n >= len(pixels)):\n return\n pixels[n] = self.Color(r, g, b)\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def colorwipe(self, pixels, c, delay):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, c)\n self.writestrip(pixels)\n time.sleep(delay)\n\n def Wheel(self, WheelPos):\n if (WheelPos < 85):\n return self.Color(WheelPos * 3, 255 - WheelPos * 3, 0)\n elif (WheelPos < 170):\n WheelPos -= 85\n return self.Color(255 - WheelPos * 3, 0, WheelPos * 3)\n else:\n WheelPos -= 170\n return self.Color(0, WheelPos * 3, 255 - WheelPos * 3)\n\n \n\n def red(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 0))\n self.writestrip(pixels)\n\n\n def blue(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 255, 0))\n self.writestrip(pixels)\n\n\n\n\n def white(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 255, 255))\n self.writestrip(pixels)\n\n\n\n def rainbowCycle(self, pixels, wait):\n for j in range(256): # one cycle of all 256 colors in the wheel\n for i in range(len(pixels)):\n # tricky math! we use each pixel as a fraction of the full 96-color wheel\n # (thats the i / strip.numPixels() part)\n # Then add in j which makes the colors go around per pixel\n # the % 96 is to make the wheel cycle around\n self.setpixelcolor(pixels, i, self.Wheel(((i * 256 / len(pixels)) + j) % 256))\n self.writestrip(pixels)\n time.sleep(wait)\n\n\n def cls(self, pixels):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 0))\n self.writestrip(pixels)\n\n def main(self):\n try:\n\n self.blue(self.ledpixels, 0.00)\n \n\n\n except KeyboardInterrupt:\n self.cls(self.ledpixels)\n sys.exit(0)\n\n\nif __name__ == '__main__':\n LEDs = Lights()\n LEDs.main()",
+        "outputs": 1,
+        "x": 277.9409484863281,
+        "y": 355.3611145019531,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ed496640.3c2338",
+        "type": "python-function",
+        "z": "4485d043.94b09",
+        "name": "red",
+        "func": "#!/usr/bin/env python\n#\n\n# Based on: Adafruit https://raw.githubusercontent.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/master/Adafruit_LEDpixels/Adafruit_LEDpixels.py and AndyPi\n#\n# Hardware: WS2801 pixels, CLOCK=RPi23; Data=RPi19, GND=RpiGND, +5v=Rpi+5v\n\nimport RPi.GPIO as GPIO\nimport time\nimport sys\n\n\nclass Lights:\n\n # import RPi.GPIO as GPIO, time, os\n NUMBER_OF_PIXELS = 200 # set number of pixels in your strip\n DEBUG = 1\n GPIO.setmode(GPIO.BCM)\n\n SPICLK = 23 # The SPI clock pin on the raspberry pi, pin 23\n SPIDO = 19 # The SPI data line (MOSI) on the raspberry pi, pin 19\n ledpixels = [0] * NUMBER_OF_PIXELS\n\n def slowspiwrite(self, clockpin, datapin, byteout):\n GPIO.setup(clockpin, GPIO.OUT)\n GPIO.setup(datapin, GPIO.OUT)\n for i in range(8):\n if (byteout & 0x80):\n GPIO.output(datapin, True)\n else:\n GPIO.output(clockpin, False)\n byteout <<= 1\n GPIO.output(clockpin, True)\n GPIO.output(clockpin, False)\n\n def writestrip(self, pixels):\n try:\n spidev = open(\"/dev/spidev0.0\", \"bw\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 8) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 0) & 0xFF).encode('latin-1'))\n except ValueError:\n spidev = open(\"/dev/spidev0.0\", \"w\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF))\n spidev.write(chr((pixels[i] >> 8) & 0xFF))\n spidev.write(chr((pixels[i] >> 0) & 0xFF))\n spidev.close()\n time.sleep(0.002)\n\n def Color(self, r, g, b):\n return ((int(r) & 0xFF) << 16) | ((int(g) & 0xFF) << 8) | (int(b) & 0xFF)\n\n def setpixelcolor(self, pixels, n, r, g, b):\n if (n >= len(pixels)):\n return\n pixels[n] = self.Color(r, g, b)\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def colorwipe(self, pixels, c, delay):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, c)\n self.writestrip(pixels)\n time.sleep(delay)\n\n def Wheel(self, WheelPos):\n if (WheelPos < 85):\n return self.Color(WheelPos * 3, 255 - WheelPos * 3, 0)\n elif (WheelPos < 170):\n WheelPos -= 85\n return self.Color(255 - WheelPos * 3, 0, WheelPos * 3)\n else:\n WheelPos -= 170\n return self.Color(0, WheelPos * 3, 255 - WheelPos * 3)\n\n \n\n def red(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 0))\n self.writestrip(pixels)\n\n\n def blue(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 255, 0))\n self.writestrip(pixels)\n\n\n\n\n def white(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 255, 255))\n self.writestrip(pixels)\n\n\n\n def rainbowCycle(self, pixels, wait):\n for j in range(256): # one cycle of all 256 colors in the wheel\n for i in range(len(pixels)):\n # tricky math! we use each pixel as a fraction of the full 96-color wheel\n # (thats the i / strip.numPixels() part)\n # Then add in j which makes the colors go around per pixel\n # the % 96 is to make the wheel cycle around\n self.setpixelcolor(pixels, i, self.Wheel(((i * 256 / len(pixels)) + j) % 256))\n self.writestrip(pixels)\n time.sleep(wait)\n\n\n def cls(self, pixels):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 0))\n self.writestrip(pixels)\n\n def main(self):\n try:\n\n self.red(self.ledpixels, 0.00)\n \n\n\n except KeyboardInterrupt:\n self.cls(self.ledpixels)\n sys.exit(0)\n\n\nif __name__ == '__main__':\n LEDs = Lights()\n LEDs.main()",
+        "outputs": 1,
+        "x": 277.94090270996094,
+        "y": 398.3507080078125,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "207049f2.feb7b6",
+        "type": "python-function",
+        "z": "4485d043.94b09",
+        "name": "green",
+        "func": "#!/usr/bin/env python\n#\n\n# Based on: Adafruit https://raw.githubusercontent.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/master/Adafruit_LEDpixels/Adafruit_LEDpixels.py and AndyPi\n#\n# Hardware: WS2801 pixels, CLOCK=RPi23; Data=RPi19, GND=RpiGND, +5v=Rpi+5v\n\nimport RPi.GPIO as GPIO\nimport time\nimport sys\n\n\nclass Lights:\n\n # import RPi.GPIO as GPIO, time, os\n NUMBER_OF_PIXELS = 200 # set number of pixels in your strip\n DEBUG = 1\n GPIO.setmode(GPIO.BCM)\n\n SPICLK = 23 # The SPI clock pin on the raspberry pi, pin 23\n SPIDO = 19 # The SPI data line (MOSI) on the raspberry pi, pin 19\n ledpixels = [0] * NUMBER_OF_PIXELS\n\n def slowspiwrite(self, clockpin, datapin, byteout):\n GPIO.setup(clockpin, GPIO.OUT)\n GPIO.setup(datapin, GPIO.OUT)\n for i in range(8):\n if (byteout & 0x80):\n GPIO.output(datapin, True)\n else:\n GPIO.output(clockpin, False)\n byteout <<= 1\n GPIO.output(clockpin, True)\n GPIO.output(clockpin, False)\n\n def writestrip(self, pixels):\n try:\n spidev = open(\"/dev/spidev0.0\", \"bw\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 8) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 0) & 0xFF).encode('latin-1'))\n except ValueError:\n spidev = open(\"/dev/spidev0.0\", \"w\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF))\n spidev.write(chr((pixels[i] >> 8) & 0xFF))\n spidev.write(chr((pixels[i] >> 0) & 0xFF))\n spidev.close()\n time.sleep(0.002)\n\n def Color(self, r, g, b):\n return ((int(r) & 0xFF) << 16) | ((int(g) & 0xFF) << 8) | (int(b) & 0xFF)\n\n def setpixelcolor(self, pixels, n, r, g, b):\n if (n >= len(pixels)):\n return\n pixels[n] = self.Color(r, g, b)\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def colorwipe(self, pixels, c, delay):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, c)\n self.writestrip(pixels)\n time.sleep(delay)\n\n def Wheel(self, WheelPos):\n if (WheelPos < 85):\n return self.Color(WheelPos * 3, 255 - WheelPos * 3, 0)\n elif (WheelPos < 170):\n WheelPos -= 85\n return self.Color(255 - WheelPos * 3, 0, WheelPos * 3)\n else:\n WheelPos -= 170\n return self.Color(0, WheelPos * 3, 255 - WheelPos * 3)\n\n \n\n def red(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 0))\n self.writestrip(pixels)\n\n\n def blue(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 255))\n self.writestrip(pixels)\n\n def green(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 255))\n self.writestrip(pixels)\n\n\n\n\n def white(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 255, 255))\n self.writestrip(pixels)\n\n\n\n def rainbowCycle(self, pixels, wait):\n for j in range(256): # one cycle of all 256 colors in the wheel\n for i in range(len(pixels)):\n # tricky math! we use each pixel as a fraction of the full 96-color wheel\n # (thats the i / strip.numPixels() part)\n # Then add in j which makes the colors go around per pixel\n # the % 96 is to make the wheel cycle around\n self.setpixelcolor(pixels, i, self.Wheel(((i * 256 / len(pixels)) + j) % 256))\n self.writestrip(pixels)\n time.sleep(wait)\n\n\n def cls(self, pixels):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 0))\n self.writestrip(pixels)\n\n def main(self):\n try:\n\n self.green(self.ledpixels, 0.00)\n \n\n\n except KeyboardInterrupt:\n self.cls(self.ledpixels)\n sys.exit(0)\n\n\nif __name__ == '__main__':\n LEDs = Lights()\n LEDs.main()",
+        "outputs": 1,
+        "x": 611.9374389648438,
+        "y": 322.35418701171875,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "52688818.cc5a",
+        "type": "python-function",
+        "z": "4485d043.94b09",
+        "name": "rainbow",
+        "func": "#!/usr/bin/env python\n#\n\n# Based on: Adafruit https://raw.githubusercontent.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/master/Adafruit_LEDpixels/Adafruit_LEDpixels.py and AndyPi\n#\n# Hardware: WS2801 pixels, CLOCK=RPi23; Data=RPi19, GND=RpiGND, +5v=Rpi+5v\n\nimport RPi.GPIO as GPIO\nimport time\nimport sys\n\n\nclass Lights:\n\n # import RPi.GPIO as GPIO, time, os\n NUMBER_OF_PIXELS = 200 # set number of pixels in your strip\n DEBUG = 1\n GPIO.setmode(GPIO.BCM)\n\n SPICLK = 23 # The SPI clock pin on the raspberry pi, pin 23\n SPIDO = 19 # The SPI data line (MOSI) on the raspberry pi, pin 19\n ledpixels = [0] * NUMBER_OF_PIXELS\n\n def slowspiwrite(self, clockpin, datapin, byteout):\n GPIO.setup(clockpin, GPIO.OUT)\n GPIO.setup(datapin, GPIO.OUT)\n for i in range(8):\n if (byteout & 0x80):\n GPIO.output(datapin, True)\n else:\n GPIO.output(clockpin, False)\n byteout <<= 1\n GPIO.output(clockpin, True)\n GPIO.output(clockpin, False)\n\n def writestrip(self, pixels):\n try:\n spidev = open(\"/dev/spidev0.0\", \"bw\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 8) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 0) & 0xFF).encode('latin-1'))\n except ValueError:\n spidev = open(\"/dev/spidev0.0\", \"w\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF))\n spidev.write(chr((pixels[i] >> 8) & 0xFF))\n spidev.write(chr((pixels[i] >> 0) & 0xFF))\n spidev.close()\n time.sleep(0.002)\n\n def Color(self, r, g, b):\n return ((int(r) & 0xFF) << 16) | ((int(g) & 0xFF) << 8) | (int(b) & 0xFF)\n\n def setpixelcolor(self, pixels, n, r, g, b):\n if (n >= len(pixels)):\n return\n pixels[n] = self.Color(r, g, b)\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def colorwipe(self, pixels, c, delay):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, c)\n self.writestrip(pixels)\n time.sleep(delay)\n\n def Wheel(self, WheelPos):\n if (WheelPos < 85):\n return self.Color(WheelPos * 3, 255 - WheelPos * 3, 0)\n elif (WheelPos < 170):\n WheelPos -= 85\n return self.Color(255 - WheelPos * 3, 0, WheelPos * 3)\n else:\n WheelPos -= 170\n return self.Color(0, WheelPos * 3, 255 - WheelPos * 3)\n\n \n\n def red(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 0))\n self.writestrip(pixels)\n\n\n def blue(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 255, 0))\n self.writestrip(pixels)\n\n\n\n\n def white(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 255, 255))\n self.writestrip(pixels)\n\n\n\n def rainbowCycle(self, pixels, wait):\n for j in range(256): # one cycle of all 256 colors in the wheel\n for i in range(len(pixels)):\n # tricky math! we use each pixel as a fraction of the full 96-color wheel\n # (thats the i / strip.numPixels() part)\n # Then add in j which makes the colors go around per pixel\n # the % 96 is to make the wheel cycle around\n self.setpixelcolor(pixels, i, self.Wheel(((i * 256 / len(pixels)) + j) % 256))\n self.writestrip(pixels)\n time.sleep(wait)\n\n\n def cls(self, pixels):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 0))\n self.writestrip(pixels)\n\n def main(self):\n try:\n\n self.rainbow(self.ledpixels, 0.00)\n \n\n\n except KeyboardInterrupt:\n self.cls(self.ledpixels)\n sys.exit(0)\n\n\nif __name__ == '__main__':\n LEDs = Lights()\n LEDs.main()",
+        "outputs": 1,
+        "x": 280.9513854980469,
+        "y": 264.357666015625,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "36c66592.102bea",
+        "type": "python-function",
+        "z": "4485d043.94b09",
+        "name": "off",
+        "func": "#!/usr/bin/env python\n#\n# Title: WS2801 SPI control class for Raspberry Pi\n# Author: AndyPi (http://andypi.co.uk/)\n# Based on: Adafruit https://raw.githubusercontent.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/master/Adafruit_LEDpixels/Adafruit_LEDpixels.py\n#\n# Hardware: WS2801 pixels, CLOCK=RPi23; Data=RPi19, GND=RpiGND, +5v=Rpi+5v\n\nimport RPi.GPIO as GPIO\nimport time\nimport sys\n\n\nclass AndyPiPixelLights:\n\n # import RPi.GPIO as GPIO, time, os\n NUMBER_OF_PIXELS = 200 # set number of pixels in your strip\n DEBUG = 1\n GPIO.setmode(GPIO.BCM)\n\n SPICLK = 23 # The SPI clock pin on the raspberry pi, pin 23\n SPIDO = 19 # The SPI data line (MOSI) on the raspberry pi, pin 19\n ledpixels = [0] * NUMBER_OF_PIXELS\n\n def slowspiwrite(self, clockpin, datapin, byteout):\n GPIO.setup(clockpin, GPIO.OUT)\n GPIO.setup(datapin, GPIO.OUT)\n for i in range(8):\n if (byteout & 0x80):\n GPIO.output(datapin, True)\n else:\n GPIO.output(clockpin, False)\n byteout <<= 1\n GPIO.output(clockpin, True)\n GPIO.output(clockpin, False)\n\n def writestrip(self, pixels):\n try:\n spidev = open(\"/dev/spidev0.0\", \"bw\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 8) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 0) & 0xFF).encode('latin-1'))\n except ValueError:\n spidev = open(\"/dev/spidev0.0\", \"w\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF))\n spidev.write(chr((pixels[i] >> 8) & 0xFF))\n spidev.write(chr((pixels[i] >> 0) & 0xFF))\n spidev.close()\n time.sleep(0.002)\n\n def Color(self, r, g, b):\n return ((int(r) & 0xFF) << 16) | ((int(g) & 0xFF) << 8) | (int(b) & 0xFF)\n\n def setpixelcolor(self, pixels, n, r, g, b):\n if (n >= len(pixels)):\n return\n pixels[n] = self.Color(r, g, b)\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def colorwipe(self, pixels, c, delay):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, c)\n self.writestrip(pixels)\n time.sleep(delay)\n\n def Wheel(self, WheelPos):\n if (WheelPos < 85):\n return self.Color(WheelPos * 3, 255 - WheelPos * 3, 0)\n elif (WheelPos < 170):\n WheelPos -= 85\n return self.Color(255 - WheelPos * 3, 0, WheelPos * 3)\n else:\n WheelPos -= 170\n return self.Color(0, WheelPos * 3, 255 - WheelPos * 3)\n\n \n\n def red(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 0))\n self.writestrip(pixels)\n\n\n def blue(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 255, 0))\n self.writestrip(pixels)\n\n\n\n def green(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 255))\n self.writestrip(pixels)\n\n\n def rainbowCycle(self, pixels, wait):\n for j in range(256): # one cycle of all 256 colors in the wheel\n for i in range(len(pixels)):\n # tricky math! we use each pixel as a fraction of the full 96-color wheel\n # (thats the i / strip.numPixels() part)\n # Then add in j which makes the colors go around per pixel\n # the % 96 is to make the wheel cycle around\n self.setpixelcolor(pixels, i, self.Wheel(((i * 256 / len(pixels)) + j) % 256))\n self.writestrip(pixels)\n time.sleep(wait)\n\n\n def cls(self, pixels):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 0))\n self.writestrip(pixels)\n\n def main(self):\n try:\n\n self.cls(self.ledpixels);\n\n\n except KeyboardInterrupt:\n self.cls(self.ledpixels)\n sys.exit(0)\n\n\nif __name__ == '__main__':\n LEDs = AndyPiPixelLights()\n LEDs.main()",
+        "outputs": 1,
+        "x": 280.9479522705078,
+        "y": 430.3576545715332,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a8a9b8b5.3890d8",
+        "type": "python-function",
+        "z": "4485d043.94b09",
+        "name": "white",
+        "func": "#!/usr/bin/env python\n#\n\n# Based on: Adafruit https://raw.githubusercontent.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/master/Adafruit_LEDpixels/Adafruit_LEDpixels.py and AndyPi\n#\n# Hardware: WS2801 pixels, CLOCK=RPi23; Data=RPi19, GND=RpiGND, +5v=Rpi+5v\n\nimport RPi.GPIO as GPIO\nimport time\nimport sys\n\n\nclass Lights:\n\n # import RPi.GPIO as GPIO, time, os\n NUMBER_OF_PIXELS = 200 # set number of pixels in your strip\n DEBUG = 1\n GPIO.setmode(GPIO.BCM)\n\n SPICLK = 23 # The SPI clock pin on the raspberry pi, pin 23\n SPIDO = 19 # The SPI data line (MOSI) on the raspberry pi, pin 19\n ledpixels = [0] * NUMBER_OF_PIXELS\n\n def slowspiwrite(self, clockpin, datapin, byteout):\n GPIO.setup(clockpin, GPIO.OUT)\n GPIO.setup(datapin, GPIO.OUT)\n for i in range(8):\n if (byteout & 0x80):\n GPIO.output(datapin, True)\n else:\n GPIO.output(clockpin, False)\n byteout <<= 1\n GPIO.output(clockpin, True)\n GPIO.output(clockpin, False)\n\n def writestrip(self, pixels):\n try:\n spidev = open(\"/dev/spidev0.0\", \"bw\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 8) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 0) & 0xFF).encode('latin-1'))\n except ValueError:\n spidev = open(\"/dev/spidev0.0\", \"w\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF))\n spidev.write(chr((pixels[i] >> 8) & 0xFF))\n spidev.write(chr((pixels[i] >> 0) & 0xFF))\n spidev.close()\n time.sleep(0.002)\n\n def Color(self, r, g, b):\n return ((int(r) & 0xFF) << 16) | ((int(g) & 0xFF) << 8) | (int(b) & 0xFF)\n\n def setpixelcolor(self, pixels, n, r, g, b):\n if (n >= len(pixels)):\n return\n pixels[n] = self.Color(r, g, b)\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def colorwipe(self, pixels, c, delay):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, c)\n self.writestrip(pixels)\n time.sleep(delay)\n\n def Wheel(self, WheelPos):\n if (WheelPos < 85):\n return self.Color(WheelPos * 3, 255 - WheelPos * 3, 0)\n elif (WheelPos < 170):\n WheelPos -= 85\n return self.Color(255 - WheelPos * 3, 0, WheelPos * 3)\n else:\n WheelPos -= 170\n return self.Color(0, WheelPos * 3, 255 - WheelPos * 3)\n\n \n\n def red(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 0))\n self.writestrip(pixels)\n\n\n def blue(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 255, 0))\n self.writestrip(pixels)\n\n\n\n\n def white(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 255, 255))\n self.writestrip(pixels)\n\n\n\n def rainbowCycle(self, pixels, wait):\n for j in range(256): # one cycle of all 256 colors in the wheel\n for i in range(len(pixels)):\n # tricky math! we use each pixel as a fraction of the full 96-color wheel\n # (thats the i / strip.numPixels() part)\n # Then add in j which makes the colors go around per pixel\n # the % 96 is to make the wheel cycle around\n self.setpixelcolor(pixels, i, self.Wheel(((i * 256 / len(pixels)) + j) % 256))\n self.writestrip(pixels)\n time.sleep(wait)\n\n\n def cls(self, pixels):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 0))\n self.writestrip(pixels)\n\n def main(self):\n try:\n\n self.white(self.ledpixels, 0.00)\n \n\n\n except KeyboardInterrupt:\n self.cls(self.ledpixels)\n sys.exit(0)\n\n\nif __name__ == '__main__':\n LEDs = Lights()\n LEDs.main()",
+        "outputs": 1,
+        "x": 280.9444274902344,
+        "y": 467.125,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e2d05cf.acee62",
+        "type": "python-function",
+        "z": "4485d043.94b09",
+        "name": "yellow",
+        "func": "#!/usr/bin/env python\n#\n\n# Based on: Adafruit https://raw.githubusercontent.com/adafruit/Adafruit-Raspberry-Pi-Python-Code/master/Adafruit_LEDpixels/Adafruit_LEDpixels.py and AndyPi\n#\n# Hardware: WS2801 pixels, CLOCK=RPi23; Data=RPi19, GND=RpiGND, +5v=Rpi+5v\n\nimport RPi.GPIO as GPIO\nimport time\nimport sys\n\n\nclass Lights:\n\n # import RPi.GPIO as GPIO, time, os\n NUMBER_OF_PIXELS = 200 # set number of pixels in your strip\n DEBUG = 1\n GPIO.setmode(GPIO.BCM)\n\n SPICLK = 23 # The SPI clock pin on the raspberry pi, pin 23\n SPIDO = 19 # The SPI data line (MOSI) on the raspberry pi, pin 19\n ledpixels = [0] * NUMBER_OF_PIXELS\n\n def slowspiwrite(self, clockpin, datapin, byteout):\n GPIO.setup(clockpin, GPIO.OUT)\n GPIO.setup(datapin, GPIO.OUT)\n for i in range(8):\n if (byteout & 0x80):\n GPIO.output(datapin, True)\n else:\n GPIO.output(clockpin, False)\n byteout <<= 1\n GPIO.output(clockpin, True)\n GPIO.output(clockpin, False)\n\n def writestrip(self, pixels):\n try:\n spidev = open(\"/dev/spidev0.0\", \"bw\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 8) & 0xFF).encode('latin-1'))\n spidev.write(chr((pixels[i] >> 0) & 0xFF).encode('latin-1'))\n except ValueError:\n spidev = open(\"/dev/spidev0.0\", \"w\")\n for i in range(len(pixels)):\n spidev.write(chr((pixels[i] >> 16) & 0xFF))\n spidev.write(chr((pixels[i] >> 8) & 0xFF))\n spidev.write(chr((pixels[i] >> 0) & 0xFF))\n spidev.close()\n time.sleep(0.002)\n\n def Color(self, r, g, b):\n return ((int(r) & 0xFF) << 16) | ((int(g) & 0xFF) << 8) | (int(b) & 0xFF)\n\n def setpixelcolor(self, pixels, n, r, g, b):\n if (n >= len(pixels)):\n return\n pixels[n] = self.Color(r, g, b)\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def setpixelcolor(self, pixels, n, c):\n if (n >= len(pixels)):\n return\n pixels[n] = c\n\n def colorwipe(self, pixels, c, delay):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, c)\n self.writestrip(pixels)\n time.sleep(delay)\n\n def Wheel(self, WheelPos):\n if (WheelPos < 85):\n return self.Color(WheelPos * 3, 255 - WheelPos * 3, 0)\n elif (WheelPos < 170):\n WheelPos -= 85\n return self.Color(255 - WheelPos * 3, 0, WheelPos * 3)\n else:\n WheelPos -= 170\n return self.Color(0, WheelPos * 3, 255 - WheelPos * 3)\n\n \n\n def red(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 0))\n self.writestrip(pixels)\n\n\n def blue(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 255, 0))\n self.writestrip(pixels)\n\n\n\n\n def white(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 255, 255))\n self.writestrip(pixels)\n\n\n\n def yellow(self, pixels, wait):\n for j in range(256): \n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(255, 0, 255))\n self.writestrip(pixels)\n\n\n def rainbowCycle(self, pixels, wait):\n for j in range(256): # one cycle of all 256 colors in the wheel\n for i in range(len(pixels)):\n # tricky math! we use each pixel as a fraction of the full 96-color wheel\n # (thats the i / strip.numPixels() part)\n # Then add in j which makes the colors go around per pixel\n # the % 96 is to make the wheel cycle around\n self.setpixelcolor(pixels, i, self.Wheel(((i * 256 / len(pixels)) + j) % 256))\n self.writestrip(pixels)\n time.sleep(wait)\n\n\n def cls(self, pixels):\n for i in range(len(pixels)):\n self.setpixelcolor(pixels, i, self.Color(0, 0, 0))\n self.writestrip(pixels)\n\n def main(self):\n try:\n\n self.yellow(self.ledpixels, 0.00)\n \n\n\n except KeyboardInterrupt:\n self.cls(self.ledpixels)\n sys.exit(0)\n\n\nif __name__ == '__main__':\n LEDs = Lights()\n LEDs.main()",
+        "outputs": 1,
+        "x": 282.94447326660156,
+        "y": 522.128488905636,
+        "wires": [
+            []
+        ]
+    }
+]
