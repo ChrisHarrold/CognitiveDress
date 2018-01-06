@@ -60,6 +60,27 @@ Your lights should turn blue then fade off
 
 ## Node-RED... adding the speech to text functionality
 
+Follow the instructions in the videos found on this page (https://medium.com/@jeancarlbisson/setting-up-your-tjbot-to-use-node-red-df94ff94a114) to set up Node-RED with TJBot modules that will be used to listen for commands to change the light colors.  You may skip the 3rd video. 
+
+We need to install one more node to execute python code within Node-RED.  To do so go to your Node-RED session running in the browser. Click the menu in the top right corner, and select "Manage Palette". Click the install tab and type the word python. Click to install the first option "node-red-contrib-python-function", and click the install prompt once it appears.  Close this window and scroll through your nodes.  You should now see a node entitled "python function" listed in your functions. 
+
+You are now ready to import the completed Node-RED flow to run this project. Click on the menu once again and Import from the Clipboard.  Go to the Node-RED flow file in your CognitiveDress directory, select all and copy.  Paste this content into the clipboard and click import.  The flow is imported.  
+
+Enter your watson speech to text credentials by clicking on the pencil to the right of the Bot field and filling in the user name and password. If you have not configured a watson speech to text service, instructions are below.  You may skip this section if you already have a service provisioned. 
+
+---
+In this step, we help you get API access to the Watson Speech to Text. Let's start with creating a Speech to Text instance on IBM Cloud If you don't have a IBM Cloud account, follow the instructions (https://developer.ibm.com/predictiveanalytics/wp-content/uploads/sites/48/2015/09/Getting-Started-with-Watson-Services-on-Bluemix.pdf) to create a free trial.
+
+When creating your service you may leave the default values and select 'Create'.
+
+Click on 'Sevice Credentials' on the left menu and copy your credentials into the the user name and password fields for the listen node.
+
+---
+
+Once your credentials are entered, ensure your microphone is plugged in to the raspberry pi and click "Deploy" in Node-RED.  You can start the flow and prompt your pi to listen to a color by clicking on the small box to the left of the start listening node, and click the small box to the left of stop listening to stop.  Colors will change when spoken.  Currently this project is programmed to recognize blue, white, yellow, red, rainbow and green.  
+
+Enjoy your new colorful project!
+
 
 
 
