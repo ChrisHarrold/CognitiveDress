@@ -30,6 +30,15 @@ curl -sL http://ibm.biz/tjbot-bootstrap | sudo sh -
 
 This process may take several minutes.  When prompted to make selections always select the default (indicated by capital letters such as Y/n). 
 
+Enable SPI by clicking on the Raspberry Pi icon on the top left corner of the screen, selecting preferences, then Raspberry Pi configuration. Click the interfaces tab and enable SPI.  Click ok.
+
+Install the hardware SPI control module for python. Start by updating the system, installing the development tools and pip with the following commands:
+
+sudo apt-get update
+sudo apt-get install python-dev
+sudo apt-get install python-pip
+sudo pip install spidev
+
 #Connect your LED Strip to the raspberry pi and test your python code to control the lights
 
 On your pi, Connect pin 6 to GND on the LED strip, pin 19 to data (SI), pin 23 to clock (CK) and pin 2 to 5v. Note on the LED strip there is an arrow which indicates the direction of data flow.  We are providing data to the strip and want to start at the base of the arrow, not the end the tip of the arrow is pointing to. 
@@ -46,6 +55,12 @@ cd CognitiveDress
 Test to ensure your lights are reponding as expected by running the python code included in the repository.  Run the command
 
 sudo python changecolor.py
+
+Your lights should turn blue then fade off
+
+## Node-RED... adding the speech to text functionality
+
+
 
 
 
