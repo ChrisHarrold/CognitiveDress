@@ -19,7 +19,7 @@ This project using a raspberry pi 3, IBM Watson's speech to text service, a usb 
 # Getting Started with Your Pi
 (Note this section of instructions should be credited to IBM research and the instructions for setting up a TJBot)
 
-Raspberry Pi is similar to a full computer, which means you need a monitor, mouse, and keyboard for it. If you have a TV around, you can connect your Pi to your TV via a HDMI cable. In most of the Pi kits, the SD card is already preloaded with an image of the Raspberry Pi Operating System. You need to put the SD card in the Pi, turn the Pi ON and follow the instructions on screen to complete the installation of the operating system. If you have problems setting up your Pi, you can troubleshoot here: https://www.raspberrypi.org/learning/hardware-guide/.
+Raspberry Pi is similar to a full computer, which means you need a monitor, mouse, and keyboard for it. If you have a TV around, you can connect your Pi to your TV via a HDMI cable. Insert the SD card in the Pi, turn the Pi ON and follow the instructions on screen to complete the installation of the operating system. If you have problems setting up your Pi, you can troubleshoot here: https://www.raspberrypi.org/learning/hardware-guide/.
 
 
 Install Packages
@@ -35,6 +35,18 @@ This process may take several minutes.  When prompted to make selections always 
 On your pi, Connect pin 6 to GND on the LED strip, pin 19 to data (SI), pin 23 to clock (CK) and pin 2 to 5v. Note on the LED strip there is an arrow which indicates the direction of data flow.  We are providing data to the strip and want to start at the base of the arrow, not the end the tip of the arrow is pointing to. 
 
 
-Once your connections are made, connect power to the pi. Download the 
+Once your connections are made, connect power to the pi. Clone this repository with the command
+
+git clone https://github.com/ericareuter/CognitiveDress.git
+
+Change into the directory (CognitiveDress) that was just created by the colone with the command
+
+cd CognitiveDress
+
+Test to ensure your lights are reponding as expected by running the python code included in the repository.  Run the command
+
+sudo python changecolor.py
+
+
 
  
